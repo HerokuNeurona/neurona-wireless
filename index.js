@@ -60,11 +60,99 @@ restService.post("/echo", function(req, res) {
           idNeurona = result;
           if (idNeurona != null) {
 
-            respuesta = email + "con id neurona "+idNeurona;
-                return res.json({
-                  fulfillmentText: respuesta,
-                  source: "webhook-echo-sample"
-                });
+            switch(Sensores){
+              case "Temperatura Ambiente":
+                id_sensor = "1";
+                tipoValor = "grados centigrados";
+                break;
+              case "Humedad Ambiente":
+                id_sensor = "2";
+                tipoValor = "por ciento";
+                break;
+              case "Luminosidad LUX":
+                id_sensor = "3";
+                tipoValor = "Kiloluxes";
+                break;
+              case "Radiación UV":
+                id_sensor = "4";
+                tipoValor = "radiación ultravioleta";
+                break;
+              case "Dióxido de Carbono":
+                id_sensor = "5";
+                tipoValor = "partes por millon";
+                break;
+              case "Contenido Volumétrico de Agua": 
+                id_sensor = "6";
+                tipoValor = "por ciento";
+                break;
+              case "Conductividad Eléctrica":
+                id_sensor = "7";
+                tipoValor = "miliSiemes entre centimetro";
+                break;
+              case "Temperatura Sustrato":
+                id_sensor = "8";
+                tipoValor = "pascales";
+                break;
+              case "Drenaje":
+                id_sensor = "9";
+                tipoValor = "por ciento";
+                break;
+              case "Flujo de Agua":
+                id_sensor = "10";
+                tipoValor = "litros";
+                break;
+              case "Velocidad De Viento":
+                id_sensor = "11";
+                tipoValor = "kilometros por hora";
+                break;
+              case "Dirección de Viento":
+                id_sensor = "12";
+                tipoValor = "N/S/E/O";
+                break;
+              case "Pluviómetro":
+                id_sensor = "13";
+                tipoValor = "milimetros";
+                break;
+              case "Voltaje Estación Solar":
+                id_sensor = "14";
+                tipoValor = "volts";
+                break;
+            }
+
+            var array = Estacion.split(" ");
+            idestacion = array[1];
+
+            var id_lectura = "";
+            var valor_lectura = "";
+
+            ConsultaLectura(idestacion, function(result) {
+                id_lectura = result;
+                if (id_lectura != null) {
+                  ConsultaValor(id_lectura,id_sensor, function(result) {
+                    valor_lectura = result;
+                    if (valor_lectura != null) {
+                      respuesta = Sensores + " en la " + Estacion + " es de "+ valor_lectura + " " + tipoValor +". ¿Necesitas algo más? ";
+                      return res.json({
+                        fulfillmentText: respuesta,
+                        source: "webhook-echo-sample"
+                      });
+                    }else{
+                      respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
+                      return res.json({
+                          fulfillmentText: respuesta,
+                          source: "webhook-echo-sample"
+                      });
+                    }
+                  });
+
+                }else{
+                  respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
+                  return res.json({
+                      fulfillmentText: respuesta,
+                      source: "webhook-echo-sample"
+                  });
+                }
+            });
 
           }else{
             respuesta = "Lo siento, no tienes acceso a la "+Estacion;
@@ -85,103 +173,9 @@ restService.post("/echo", function(req, res) {
     });
 
 
-/*
-  	switch(Sensores){
-  		case "Temperatura Ambiente":
-  			id_sensor = "1";
-  			tipoValor = "grados centigrados";
-  			break;
-  		case "Humedad Ambiente":
-  			id_sensor = "2";
-  			tipoValor = "por ciento";
-  			break;
-  		case "Luminosidad LUX":
-  			id_sensor = "3";
-  			tipoValor = "Kiloluxes";
-  			break;
-  		case "Radiación UV":
-  			id_sensor = "4";
-  			tipoValor = "radiación ultravioleta";
-  			break;
-  		case "Dióxido de Carbono":
-  			id_sensor = "5";
-  			tipoValor = "partes por millon";
-  			break;
-  		case "Contenido Volumétrico de Agua": 
-  			id_sensor = "6";
-  			tipoValor = "por ciento";
-  			break;
-  		case "Conductividad Eléctrica":
-  			id_sensor = "7";
-  			tipoValor = "miliSiemes entre centimetro";
-  			break;
-  		case "Temperatura Sustrato":
-  			id_sensor = "8";
-  			tipoValor = "pascales";
-  			break;
-  		case "Drenaje":
-  			id_sensor = "9";
-  			tipoValor = "por ciento";
-  			break;
-  		case "Flujo de Agua":
-  			id_sensor = "10";
-  			tipoValor = "litros";
-  			break;
-      case "Velocidad De Viento":
-        id_sensor = "11";
-        tipoValor = "kilometros por hora";
-        break;
-  		case "Dirección de Viento":
-  			id_sensor = "12";
-  			tipoValor = "N/S/E/O";
-  			break;
-  		case "Pluviómetro":
-  			id_sensor = "13";
-  			tipoValor = "milimetros";
-  			break;
-  		case "Voltaje Estación Solar":
-  			id_sensor = "14";
-  			tipoValor = "volts";
-  			break;
-	  }
-
-  	var array = Estacion.split(" ");
-  	idestacion = array[1];
-
-    var id_lectura = "";
-    var valor_lectura = "";
-
-    ConsultaLectura(idestacion, function(result) {
-        id_lectura = result;
-        if (id_lectura != null) {
-          ConsultaValor(id_lectura,id_sensor, function(result) {
-            valor_lectura = result;
-            if (valor_lectura != null) {
-              respuesta = Sensores + " en la " + Estacion + " es de "+ valor_lectura + " " + tipoValor +". ¿Necesitas algo más? ";
-              return res.json({
-                fulfillmentText: respuesta,
-                source: "webhook-echo-sample"
-              });
-            }else{
-              respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
-              return res.json({
-                  fulfillmentText: respuesta,
-                  source: "webhook-echo-sample"
-              });
-            }
-          });
-
-        }else{
-          respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
-          return res.json({
-              fulfillmentText: respuesta,
-              source: "webhook-echo-sample"
-          });
-        }
-    });
+          	
 
 
-    */
   }
 
 });
