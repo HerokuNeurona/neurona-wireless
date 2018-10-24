@@ -208,12 +208,14 @@ function ConsultaLectura(id_estacion, resultado) {
     connection.query("SELECT MAX(id) AS id FROM lectures WHERE station_id = "+id_estacion, function(error, result){
       if(error){
         resultado(null);
-      }else if(result.lenght>0){
-        returnValue = result[0].id;
-        resultado(returnValue);
       }else{
-        resultado(null);
-      }
+          if(result[0] == undefined){
+            console.log(null);
+          }else{
+            returnValue = result[0].id;
+            console.log(returnValue);
+          }
+        }
      }
     );
     connection.end();
@@ -235,12 +237,14 @@ function ConsultaValor(id_lectura,id_sensor, resultado) {
     connection.query(Sentencia, function(error, result){
         if(error){
           resultado(null);
-        }else if(result.lenght>0){
-          returnValue = result[0].value;
-          resultado(returnValue);
         }else{
-          resultado(null);
-        } 
+          if(result[0] == undefined){
+            console.log(null);
+          }else{
+            returnValue = result[0].value;
+            console.log(returnValue);
+          }
+        }
       }
     );
     connection.end();
@@ -262,12 +266,14 @@ function ConsultaEmail(email, resultado) {
     connection.query(Sentencia, function(error, result){
         if(error){
           resultado(null);
-        }else if(result.lenght>0){
-          returnValue = result[0].id;
-          resultado(returnValue);
         }else{
-          resultado(null);
-        } 
+          if(result[0] == undefined){
+            console.log(null);
+          }else{
+            returnValue = result[0].id;
+            console.log(returnValue);
+          }
+        }
       }
     );
     connection.end();
@@ -289,12 +295,14 @@ function ConsultaNeurona(idUsuario, Estacion, resultado) {
     connection.query(Sentencia, function(error, result){
         if(error){
           resultado(null);
-        }else if(result.lenght>0){
-          returnValue = result[0].id;
-          resultado(returnValue);
         }else{
-          resultado(null);
-        } 
+          if(result[0] == undefined){
+            console.log(null);
+          }else{
+            returnValue = result[0].id;
+            console.log(returnValue);
+          }
+        }
       }
     );
     connection.end();
