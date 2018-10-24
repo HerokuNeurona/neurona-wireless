@@ -56,22 +56,11 @@ restService.post("/echo", function(req, res) {
       idUsuario = result;
       if (idUsuario != null) {
 
-        ConsultaNeurona(idUsuario,Estacion, function(result) {
-          idNeurona = result;
-          if (idNeurona != null) {
-            respuesta = email + "con id test "+idUsuario+"Tienes acceso a "+Estacion+"Con id: "+idNeurona;
+        respuesta = email + "con id test "+idUsuario;
             return res.json({
               fulfillmentText: respuesta,
               source: "webhook-echo-sample"
             });
-          }else{
-            respuesta = "Lo siento, no tienes permitido acceder a la: "+Estacion;
-            return res.json({
-                fulfillmentText: respuesta,
-                source: "webhook-echo-sample"
-            });
-          }
-        });
 
       }else{
         respuesta = "Lo siento, usted no pertenece a nuestro sistema";
