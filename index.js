@@ -56,11 +56,24 @@ restService.post("/echo", function(req, res) {
       idUsuario = result;
       if (idUsuario != null) {
 
-        respuesta = email + "con id test "+idUsuario;
+        ConsultaNeurona(idUsuario,Estacion, function(result) {
+          idNeurona = result;
+          if (idNeurona != null) {
+
+            respuesta = email + "con id neurona "+idNeurona;
+                return res.json({
+                  fulfillmentText: respuesta,
+                  source: "webhook-echo-sample"
+                });
+
+          }else{
+            respuesta = "Lo siento, no tienes acceso a la "+Estacion;
             return res.json({
-              fulfillmentText: respuesta,
-              source: "webhook-echo-sample"
+                fulfillmentText: respuesta,
+                source: "webhook-echo-sample"
             });
+          }
+        });
 
       }else{
         respuesta = "Lo siento, usted no pertenece a nuestro sistema";
@@ -268,10 +281,10 @@ function ConsultaNeurona(idUsuario, Estacion, resultado) {
     });
     connection.connect(function(err) {
       if (err) throw err;
-      resultado("Connected!");
+      console.log("Connected!");
     });
     var returnValue = "Valor";
-    var Sentencia = "SELECT id FROM stations WHERE name = '"+Estacion+"' AND user_id = '"+idUsuario+"'";
+    var Sentencia = "SELECT id FROM stations WHERE user_id = '"+idUsuario+"' AND name = '"+Estacion+"' ";
     connection.query(Sentencia, function(error, result){
         if(error){
           resultado(null);
