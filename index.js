@@ -56,13 +56,6 @@ restService.post("/echo", function(req, res) {
       idUsuario = result;
       if (idUsuario != null) {
 
-        respuesta = idUsuario;
-        return res.json({
-          fulfillmentText: respuesta,
-          source: "webhook-echo-sample"
-        });
-
-/*
         ConsultaNeurona(idUsuario,Estacion, function(result) {
           idNeurona = result;
           if (idNeurona != null) {
@@ -79,8 +72,6 @@ restService.post("/echo", function(req, res) {
             });
           }
         });
-
-  */
 
       }else{
         respuesta = "Lo siento, usted no pertenece a nuestro sistema";
