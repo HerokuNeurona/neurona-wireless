@@ -202,7 +202,7 @@ function ConsultaLectura(id_estacion, resultado) {
     });
     connection.connect(function(err) {
       if (err) throw err;
-      console.log("Connected!");
+      resultado("Connected!");
     });
     var returnValue = "Valor";
     connection.query("SELECT MAX(id) AS id FROM lectures WHERE station_id = "+id_estacion, function(error, result){
@@ -210,10 +210,10 @@ function ConsultaLectura(id_estacion, resultado) {
         resultado(null);
       }else{
           if(result[0] == undefined){
-            console.log(null);
+            resultado(null);
           }else{
             returnValue = result[0].id;
-            console.log(returnValue);
+            resultado(returnValue);
           }
         }
      }
@@ -230,7 +230,7 @@ function ConsultaValor(id_lectura,id_sensor, resultado) {
     });
     connection.connect(function(err) {
       if (err) throw err;
-      console.log("Connected!");
+      resultado("Connected!");
     });
     var returnValue = "Valor";
     var Sentencia = "SELECT value FROM registers WHERE lecture_id = '"+id_lectura+"' AND sensor_id = '"+id_sensor+"'";
@@ -239,10 +239,10 @@ function ConsultaValor(id_lectura,id_sensor, resultado) {
           resultado(null);
         }else{
           if(result[0] == undefined){
-            console.log(null);
+            resultado(null);
           }else{
             returnValue = result[0].value;
-            console.log(returnValue);
+            resultado(returnValue);
           }
         }
       }
@@ -268,10 +268,10 @@ function ConsultaEmail(email, resultado) {
           resultado(null);
         }else{
           if(result[0] == undefined){
-            console.log(null);
+            resultado(null);
           }else{
             returnValue = result[0].id;
-            console.log(returnValue);
+            resultado(returnValue);
           }
         }
       }
@@ -288,7 +288,7 @@ function ConsultaNeurona(idUsuario, Estacion, resultado) {
     });
     connection.connect(function(err) {
       if (err) throw err;
-      console.log("Connected!");
+      resultado("Connected!");
     });
     var returnValue = "Valor";
     var Sentencia = "SELECT id FROM stations WHERE name = '"+Estacion+"' AND user_id = '"+idUsuario+"'";
@@ -297,10 +297,10 @@ function ConsultaNeurona(idUsuario, Estacion, resultado) {
           resultado(null);
         }else{
           if(result[0] == undefined){
-            console.log(null);
+            resultado(null);
           }else{
             returnValue = result[0].id;
-            console.log(returnValue);
+            resultado(returnValue);
           }
         }
       }
@@ -309,7 +309,7 @@ function ConsultaNeurona(idUsuario, Estacion, resultado) {
 }
 
 restService.listen(process.env.PORT || 8000, function() {
-  console.log("Server up and listening");
+  resultado("Server up and listening");
 });
 
 
