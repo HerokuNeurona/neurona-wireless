@@ -309,7 +309,7 @@ function ConsultaNeurona(idUsuario, Estacion, resultado) {
 }
 
 restService.listen(process.env.PORT || 8000, function() {
-  resultado("Server up and listening");
+  console.log("Server up and listening");
 });
 
 
