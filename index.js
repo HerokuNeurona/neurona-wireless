@@ -44,7 +44,7 @@ restService.post("/echo", function(req, res) {
   //var contador = req.data.count = 1;
 
   if (Sensores == "vacio" || Estacion == "vacio" || email == "vacio" ) {
-    respuesta = "Disculpe, necesito que indique el sensor y la estacion.";
+    respuesta = "Disculpe, necesito que indique el sensor y la estacion. ¿Necesitas algo más?";
     return res.json({
       fulfillmentText: respuesta,
       source: "webhook-echo-sample"
@@ -155,7 +155,7 @@ restService.post("/echo", function(req, res) {
             });
 
           }else{
-            respuesta = "Lo siento, no tienes acceso a la "+Estacion;
+            respuesta = "Lo siento, no tienes acceso a la "+Estacion+", ¿Necesitas algo más?";
             return res.json({
                 fulfillmentText: respuesta,
                 source: "webhook-echo-sample"
@@ -164,7 +164,7 @@ restService.post("/echo", function(req, res) {
         });
 
       }else{
-        respuesta = "Lo siento, usted no pertenece a nuestro sistema";
+        respuesta = "Lo siento, usted no pertenece a nuestro sistema, ¿Necesitas algo más?";
         return res.json({
             fulfillmentText: respuesta,
             source: "webhook-echo-sample"
