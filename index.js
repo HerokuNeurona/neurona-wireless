@@ -44,11 +44,71 @@ restService.post("/echo", function(req, res) {
   //var contador = req.data.count = 1;
 
   if (Sensores == "vacio" || Estacion == "vacio" || email == "vacio" ) {
-    respuesta = "Disculpe, necesito que indique el sensor y la estacion. ¿Necesitas algo más?";
-    return res.json({
-      fulfillmentText: respuesta,
-      source: "webhook-echo-sample"
-    });
+    if (Sensores == "vacio" && Estacion != "vacio" && email != "vacio"  ) { //Puede que solo pida Neurona
+      ConsultaEmail(email, function(result) {
+        idUsuario = result;
+        if (idUsuario != null) {
+          ConsultaNeurona(idUsuario,Estacion, function(result) {
+            idNeurona = result;
+            if (idNeurona != null) {
+              var array = Estacion.split(" ");
+              idestacion = array[1];
+              var id_lectura = "";
+              var valores_lectura = "";
+              ConsultaLectura(idestacion, function(result) {
+                  id_lectura = result;
+                  if (id_lectura != null) {
+                    ConsultaAllValores(id_lectura, function(result) {
+                      valores_lectura = result;
+                      if (valores_lectura != null) {
+                        respuesta = Estacion + " tiene las siguientes lecturas: \n"+ valores_lectura "\n ¿Necesitas algo más? ";
+                        return res.json({
+                          fulfillmentText: respuesta,
+                          source: "webhook-echo-sample"
+                        });
+                      }else{
+                        respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
+                        return res.json({
+                            fulfillmentText: respuesta,
+                            source: "webhook-echo-sample"
+                        });
+                      }
+                    });
+
+                  }else{
+                    respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
+                    return res.json({
+                        fulfillmentText: respuesta,
+                        source: "webhook-echo-sample"
+                    });
+                  }
+              });
+
+            }else{
+              respuesta = "Lo siento, no tienes acceso a la "+Estacion+", ¿Necesitas algo más?";
+              return res.json({
+                  fulfillmentText: respuesta,
+                  source: "webhook-echo-sample"
+              });
+            }
+          });
+
+
+        }else{
+          respuesta = "Lo siento, usted no pertenece a nuestro sistema, ¿Necesitas algo más?";
+          return res.json({
+              fulfillmentText: respuesta,
+              source: "webhook-echo-sample"
+          });
+        }
+      });
+    }else{
+      respuesta = "Disculpe, necesito que indique la estacion. ¿Necesitas algo más?";
+      return res.json({
+        fulfillmentText: respuesta,
+        source: "webhook-echo-sample"
+      });
+    }
   }else{
 
     //Antes de todo haremos verificacion de email
@@ -171,11 +231,6 @@ restService.post("/echo", function(req, res) {
         });
       }
     });
-
-
-          	
-
-
   }
 
 });
@@ -294,6 +349,37 @@ function ConsultaNeurona(idUsuario, Estacion, resultado) {
     );
     connection.end();
 }
+
+function ConsultaAllValores(id_lectura, resultado) {
+    var connection = mysql.createConnection({
+      host: HOST,
+      user: USER,
+      password: PASSWORD,
+      database: DATABASE
+    });
+    connection.connect(function(err) {
+      if (err) throw err;
+      resultado("Connected!");
+    });
+    var returnValue = "Valor";
+    var Sentencia = "SELECT value FROM registers WHERE lecture_id = '"+id_lectura+"'";
+    connection.query(Sentencia, function(error, result){
+        if(error){
+          resultado(null);
+        }else{
+          if(result[0] == undefined){
+            resultado(null);
+          }else{
+            returnValue = result[0].value;
+            resultado(returnValue);
+          }
+        }
+      }
+    );
+    connection.end();
+}
+
+
 
 restService.listen(process.env.PORT || 8000, function() {
   console.log("Server up and listening");
