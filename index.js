@@ -59,10 +59,10 @@ restService.post("/echo", function(req, res) {
                     ConsultaAllValores(id_lectura, function(result) {
                       valores_lectura = result;
                       if (valores_lectura != null) {
-                        respuesta = Estacion + " tiene las siguientes lecturas:\n\n";
+                        respuesta = Estacion + " tiene las siguientes lecturas: ";
                         //Aqui ya esta el array
                         valores_lectura.forEach(function(element) {
-                          respuesta += element.sensor_id+" "+element.value + "\n"
+                          respuesta += element.sensor_id + " " + element.value + ", ";
                         });
 
                         respuesta += "¿Necesitas algo más?";
