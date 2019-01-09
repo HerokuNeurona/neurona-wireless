@@ -110,7 +110,6 @@ restService.post("/echo", function(req, res) {
       });
     }
   }else{
-
     //Antes de todo haremos verificacion de email
     ConsultaEmail(email, function(result) {
       idUsuario = result;
@@ -378,8 +377,6 @@ function ConsultaAllValores(id_lectura, resultado) {
     );
     connection.end();
 }
-
-
 
 restService.listen(process.env.PORT || 8000, function() {
   console.log("Server up and listening");
