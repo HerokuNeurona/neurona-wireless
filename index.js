@@ -59,20 +59,11 @@ restService.post("/echo", function(req, res) {
                     ConsultaAllValores(id_lectura, function(result) {
                       valores_lectura = result;
                       if (valores_lectura != null) {
-                        respuesta = Estacion + " tiene las siguientes lecturas: ";
-                        //Aqui ya esta el array
-                        valores_lectura.forEach(function(element) {
-                          respuesta += "Sensor: "+ element.sensor_id.toString() + " " + element.value + ", ";
-                        });
-
-                        respuesta += "¿Necesitas algo más?";
+                        respuesta = Estacion + "tiene las siguientes lecturas: " + valores_lectura + "¿Necesitas algo más?";
                         return res.json({
                           fulfillmentText: respuesta,
                           source: "webhook-echo-sample"
                         });
-
-
-
                       }else{
                         respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
                         return res.json({
@@ -365,13 +356,71 @@ function ConsultaAllValores(id_lectura, resultado) {
       if (err) throw err;
       console.log("Connected!");
     });
-    var returnValue = "Valor";
+    var returnValue = "";
     var Sentencia = "SELECT * FROM registers WHERE lecture_id = '"+id_lectura+"'";
     connection.query(Sentencia, function(error, result){
         if(error){
           resultado(null);
         }else{
-          returnValue = result;
+          result.forEach(async (element) => {
+            getSensorNameById(element.sensor_id, function(sensorName){
+              getSensorUnitsById(element.sensor_id, function(sensorUnits){
+                returnValue += sensorName + " "+element.value + " "+sensorUnits +", ";
+              });
+            });
+            await waitFor(2000);
+            resultado(returnValue);
+          });
+        }
+      }
+    );
+    connection.end();
+}
+
+
+function getSensorNameById(idSensor, resultado) {
+    var connection = mysql.createConnection({
+      host: HOST,
+      user: USER,
+      password: PASSWORD,
+      database: DATABASE
+    });
+    connection.connect(function(err) {
+      if (err) throw err;
+      console.log("Connected!");
+    });
+    var returnValue = "Valor";
+    var Sentencia = "SELECT name FROM sensors WHERE id = '"+idSensor+"'";
+    connection.query(Sentencia, function(error, result){
+        if(error){
+          resultado(null);
+        }else{
+          returnValue = result[0].name;
+          resultado(returnValue);
+        }
+      }
+    );
+    connection.end();
+}
+
+function getSensorUnitsById(idSensor, resultado) {
+    var connection = mysql.createConnection({
+      host: HOST,
+      user: USER,
+      password: PASSWORD,
+      database: DATABASE
+    });
+    connection.connect(function(err) {
+      if (err) throw err;
+      console.log("Connected!");
+    });
+    var returnValue = "Valor";
+    var Sentencia = "SELECT units FROM sensors WHERE id = '"+idSensor+"'";
+    connection.query(Sentencia, function(error, result){
+        if(error){
+          resultado(null);
+        }else{
+          returnValue = result[0].units;
           resultado(returnValue);
         }
       }
