@@ -365,7 +365,7 @@ function ConsultaAllValores(id_lectura, resultado) {
           if(result[0] == undefined){
             resultado(null);
           }else{
-            returnValue = result[0].value;
+            returnValue = result;
             resultado(returnValue);
           }
         }
