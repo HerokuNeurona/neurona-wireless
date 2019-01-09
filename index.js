@@ -34,203 +34,35 @@ restService.post("/echo", function(req, res) {
       ? req.body.queryResult.parameters.email
       : "vacio";
 
-  var respuesta = "";
-  var id_sensor = "";
+  var respuesta  = "";
+  var id_sensor  = "";
   var idestacion = "";
-  var tipoValor = "";
-  var idUsuario = "";
-  var idNeurona = "";
+  var tipoValor  = "";
+  var idUsuario  = "";
+  var idNeurona  = "";
 
-  //var contador = req.data.count = 1;
-
-  if (Sensores == "vacio" || Estacion == "vacio" || email == "vacio" ) {
-    if (Sensores == "vacio" && Estacion != "vacio" && email != "vacio"  ) { //Puede que solo pida Neurona
-      ConsultaEmail(email, function(result) {
-        idUsuario = result;
-        if (idUsuario != null) {
-          ConsultaNeurona(idUsuario,Estacion, function(result) {
-            idNeurona = result;
-            if (idNeurona != null) {
-              var array = Estacion.split(" ");
-              idestacion = array[1];
-              var id_lectura = "";
-              var valores_lectura = "";
-              ConsultaLectura(idestacion, function(result) {
-                  id_lectura = result;
-                  if (id_lectura != null) {
-                    ConsultaAllValores(id_lectura, function(result) {
-                      valores_lectura = result;
-                      if (valores_lectura != null) {
-                        respuesta = Estacion + " tiene las siguientes lecturas: \n"+ valores_lectura "\n ¿Necesitas algo más? ";
-                        return res.json({
-                          fulfillmentText: respuesta,
-                          source: "webhook-echo-sample"
-                        });
-                      }else{
-                        respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
-                        return res.json({
-                            fulfillmentText: respuesta,
-                            source: "webhook-echo-sample"
-                        });
-                      }
-                    });
-
-                  }else{
-                    respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
-                    return res.json({
-                        fulfillmentText: respuesta,
-                        source: "webhook-echo-sample"
-                    });
-                  }
-              });
-
-            }else{
-              respuesta = "Lo siento, no tienes acceso a la "+Estacion+", ¿Necesitas algo más?";
-              return res.json({
-                  fulfillmentText: respuesta,
-                  source: "webhook-echo-sample"
-              });
-            }
-          });
-
-
-        }else{
-          respuesta = "Lo siento, usted no pertenece a nuestro sistema, ¿Necesitas algo más?";
+  if (Sensores == "vacio" || Estacion == "vacio" || email == "vacio"){ //Si cualquiera esta vacio
+    if (Sensores == "vacio" && Estacion != "vacio" && email != "vacio") {
+      ConsultaEmail(email, function(resultadoEmail) {
+        if (resultadoEmail!=null) {
+          respuesta = "Si esta en el sistema";
           return res.json({
-              fulfillmentText: respuesta,
-              source: "webhook-echo-sample"
+            fulfillmentText: respuesta,
+            source: "webhook-echo-sample"
+          });
+        }else{
+          espuesta = "Lo siento, usted no pertenece a nuestro sistema, ¿Necesitas algo más?";
+          return res.json({
+            fulfillmentText: respuesta,
+            source: "webhook-echo-sample"
           });
         }
       });
-    }else{
-      respuesta = "Disculpe, necesito que indique la estacion. ¿Necesitas algo más?";
-      return res.json({
-        fulfillmentText: respuesta,
-        source: "webhook-echo-sample"
-      });
     }
-  }else{
-    //Antes de todo haremos verificacion de email
-    ConsultaEmail(email, function(result) {
-      idUsuario = result;
-      if (idUsuario != null) {
+  }else{ //Da todos los datos
 
-        ConsultaNeurona(idUsuario,Estacion, function(result) {
-          idNeurona = result;
-          if (idNeurona != null) {
-
-            switch(Sensores){
-              case "Temperatura Ambiente":
-                id_sensor = "1";
-                tipoValor = "grados centigrados";
-                break;
-              case "Humedad Ambiente":
-                id_sensor = "2";
-                tipoValor = "por ciento";
-                break;
-              case "Luminosidad LUX":
-                id_sensor = "3";
-                tipoValor = "Kiloluxes";
-                break;
-              case "Radiación UV":
-                id_sensor = "4";
-                tipoValor = "radiación ultravioleta";
-                break;
-              case "Dióxido de Carbono":
-                id_sensor = "5";
-                tipoValor = "partes por millon";
-                break;
-              case "Contenido Volumétrico de Agua": 
-                id_sensor = "6";
-                tipoValor = "por ciento";
-                break;
-              case "Conductividad Eléctrica":
-                id_sensor = "7";
-                tipoValor = "miliSiemes entre centimetro";
-                break;
-              case "Temperatura Sustrato":
-                id_sensor = "8";
-                tipoValor = "pascales";
-                break;
-              case "Drenaje":
-                id_sensor = "9";
-                tipoValor = "por ciento";
-                break;
-              case "Flujo de Agua":
-                id_sensor = "10";
-                tipoValor = "litros";
-                break;
-              case "Velocidad De Viento":
-                id_sensor = "11";
-                tipoValor = "kilometros por hora";
-                break;
-              case "Dirección de Viento":
-                id_sensor = "12";
-                tipoValor = "N/S/E/O";
-                break;
-              case "Pluviómetro":
-                id_sensor = "13";
-                tipoValor = "milimetros";
-                break;
-              case "Voltaje Estación Solar":
-                id_sensor = "14";
-                tipoValor = "volts";
-                break;
-            }
-
-            var array = Estacion.split(" ");
-            idestacion = array[1];
-
-            var id_lectura = "";
-            var valor_lectura = "";
-
-            ConsultaLectura(idestacion, function(result) {
-                id_lectura = result;
-                if (id_lectura != null) {
-                  ConsultaValor(id_lectura,id_sensor, function(result) {
-                    valor_lectura = result;
-                    if (valor_lectura != null) {
-                      respuesta = Sensores + " en la " + Estacion + " es de "+ valor_lectura + " " + tipoValor +". ¿Necesitas algo más? ";
-                      return res.json({
-                        fulfillmentText: respuesta,
-                        source: "webhook-echo-sample"
-                      });
-                    }else{
-                      respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
-                      return res.json({
-                          fulfillmentText: respuesta,
-                          source: "webhook-echo-sample"
-                      });
-                    }
-                  });
-
-                }else{
-                  respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
-                  return res.json({
-                      fulfillmentText: respuesta,
-                      source: "webhook-echo-sample"
-                  });
-                }
-            });
-
-          }else{
-            respuesta = "Lo siento, no tienes acceso a la "+Estacion+", ¿Necesitas algo más?";
-            return res.json({
-                fulfillmentText: respuesta,
-                source: "webhook-echo-sample"
-            });
-          }
-        });
-
-      }else{
-        respuesta = "Lo siento, usted no pertenece a nuestro sistema, ¿Necesitas algo más?";
-        return res.json({
-            fulfillmentText: respuesta,
-            source: "webhook-echo-sample"
-        });
-      }
-    });
   }
+
 
 });
 
