@@ -59,11 +59,20 @@ restService.post("/echo", function(req, res) {
                     ConsultaAllValores(id_lectura, function(result) {
                       valores_lectura = result;
                       if (valores_lectura != null) {
-                        respuesta = Estacion + " tiene las siguientes lecturas: \n"+ valores_lectura +"\n ¿Necesitas algo más? ";
+                        respuesta = Estacion + " tiene las siguientes lecturas:\n\n";
+                        //Aqui ya esta el array
+                        valores_lectura.forEach(function(element) {
+                          respuesta += element.sensor:id+" "+idelement.value + "\n"
+                        });
+
+                        respuesta += "¿Necesitas algo más?";
                         return res.json({
                           fulfillmentText: respuesta,
                           source: "webhook-echo-sample"
                         });
+
+
+
                       }else{
                         respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
                         return res.json({
@@ -357,17 +366,13 @@ function ConsultaAllValores(id_lectura, resultado) {
       console.log("Connected!");
     });
     var returnValue = "Valor";
-    var Sentencia = "SELECT value FROM registers WHERE lecture_id = '"+id_lectura+"'";
+    var Sentencia = "SELECT * FROM registers WHERE lecture_id = '"+id_lectura+"'";
     connection.query(Sentencia, function(error, result){
         if(error){
           resultado(null);
         }else{
-          if(result[0] == undefined){
-            resultado(null);
-          }else{
-            returnValue = result;
-            resultado(returnValue);
-          }
+          returnValue = result;
+          resultado(returnValue);
         }
       }
     );
