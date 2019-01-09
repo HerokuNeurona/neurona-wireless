@@ -57,10 +57,9 @@ restService.post("/echo", function(req, res) {
                   id_lectura = result;
                   if (id_lectura != null) {
                     ConsultaAllValores(id_lectura, function(result) {
-                      /*
                       valores_lectura = result;
                       if (valores_lectura != null) {
-                        respuesta = Estacion + " tiene las siguientes lecturas: \n"+ valores_lectura "\n ¿Necesitas algo más? ";
+                        respuesta = Estacion + " tiene las siguientes lecturas: \n"+ valores_lectura +"\n ¿Necesitas algo más? ";
                         return res.json({
                           fulfillmentText: respuesta,
                           source: "webhook-echo-sample"
@@ -72,7 +71,6 @@ restService.post("/echo", function(req, res) {
                             source: "webhook-echo-sample"
                         });
                       }
-                      */
                     });
 
                   }else{
