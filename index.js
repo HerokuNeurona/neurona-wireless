@@ -1,5 +1,4 @@
 "use strict";
-const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 const express = require("express");
 const bodyParser = require("body-parser");
 const restService = express();
@@ -371,7 +370,7 @@ function ConsultaAllValores(id_lectura, resultado) {
                 returnValue += sensorName + " "+element.value + " "+sensorUnits +", ";
                 i++;
                 if(i == longitud){
-                  console.log(returnValue);
+                  resultado(returnValue);
                 }
               });
             });
