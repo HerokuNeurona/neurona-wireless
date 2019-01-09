@@ -372,7 +372,8 @@ function ConsultaAllValores(id_lectura, resultado) {
         if(error){
           resultado(null);
         }else{
-          resultado(result);
+          returnValue = result;
+          resultado(returnValue);
         }
       }
     );
