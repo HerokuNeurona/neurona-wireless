@@ -51,7 +51,7 @@ restService.post("/echo", function(req, res) {
             source: "webhook-echo-sample"
           });
         }else{
-          espuesta = "Lo siento, usted no pertenece a nuestro sistema, ¿Necesitas algo más?";
+          respuesta = "Lo siento, usted no pertenece a nuestro sistema, ¿Necesitas algo más?";
           return res.json({
             fulfillmentText: respuesta,
             source: "webhook-echo-sample"
