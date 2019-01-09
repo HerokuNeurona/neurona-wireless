@@ -60,7 +60,7 @@ restService.post("/echo", function(req, res) {
                     ConsultaAllValores(id_lectura, function(result) {
                       valores_lectura = result;
                       if (valores_lectura != null) {
-                        respuesta = Estacion + "tiene las siguientes lecturas: " + valores_lectura + "¿Necesitas algo más?";
+                        respuesta = Estacion + " tiene las siguientes lecturas: " + valores_lectura + "¿Necesitas algo más?";
                         return res.json({
                           fulfillmentText: respuesta,
                           source: "webhook-echo-sample"
