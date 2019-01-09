@@ -59,11 +59,21 @@ restService.post("/echo", function(req, res) {
                     ConsultaAllValores(id_lectura, function(result) {
                       valores_lectura = result;
                       if (valores_lectura != null) {
-                        respuesta = Estacion + "tiene las siguientes lecturas: " + valores_lectura + "¿Necesitas algo más?";
-                        return res.json({
-                          fulfillmentText: respuesta,
-                          source: "webhook-echo-sample"
+
+                        valores_lectura.forEach(async (element) => {
+                          getSensorNameById(element.sensor_id, function(sensorName){
+                            getSensorUnitsById(element.sensor_id, function(sensorUnits){
+                              returnValue += sensorName + " "+element.value + " "+sensorUnits +", ";
+                            });
+                          });
+                          await waitFor(1000);
+                          respuesta = Estacion + "tiene las siguientes lecturas: " + valores_lectura + "¿Necesitas algo más?";
+                          return res.json({
+                            fulfillmentText: respuesta,
+                            source: "webhook-echo-sample"
+                          });
                         });
+
                       }else{
                         respuesta = "Lo siento, no he encontrado esa información ¿Deseas que busque algo más?";
                         return res.json({
@@ -362,15 +372,7 @@ function ConsultaAllValores(id_lectura, resultado) {
         if(error){
           resultado(null);
         }else{
-          result.forEach(async (element) => {
-            getSensorNameById(element.sensor_id, function(sensorName){
-              getSensorUnitsById(element.sensor_id, function(sensorUnits){
-                returnValue += sensorName + " "+element.value + " "+sensorUnits +", ";
-              });
-            });
-            await waitFor(2000);
-            resultado(returnValue);
-          });
+          resultado(result);
         }
       }
     );
