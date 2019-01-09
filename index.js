@@ -363,14 +363,18 @@ function ConsultaAllValores(id_lectura, resultado) {
         if(error){
           resultado(null);
         }else{
+          var i = 0;
+          var longitud = result.length;
           result.forEach(async (element) => {
             getSensorNameById(element.sensor_id, function(sensorName){
               getSensorUnitsById(element.sensor_id, function(sensorUnits){
                 returnValue += sensorName + " "+element.value + " "+sensorUnits +", ";
+                i++;
+                if(i == longitud){
+                  console.log(returnValue);
+                }
               });
             });
-            await waitFor(2000);
-            resultado(returnValue);
           });
         }
       }
