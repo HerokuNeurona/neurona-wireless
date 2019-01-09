@@ -62,7 +62,7 @@ restService.post("/echo", function(req, res) {
                         respuesta = Estacion + " tiene las siguientes lecturas:\n\n";
                         //Aqui ya esta el array
                         valores_lectura.forEach(function(element) {
-                          respuesta += element.sensor:id+" "+idelement.value + "\n"
+                          respuesta += element.sensor_id+" "+element.value + "\n"
                         });
 
                         respuesta += "¿Necesitas algo más?";
