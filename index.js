@@ -354,7 +354,7 @@ function ConsultaAllValores(id_lectura, resultado) {
     });
     connection.connect(function(err) {
       if (err) throw err;
-      resultado("Connected!");
+      console.log("Connected!");
     });
     var returnValue = "Valor";
     var Sentencia = "SELECT value FROM registers WHERE lecture_id = '"+id_lectura+"'";
